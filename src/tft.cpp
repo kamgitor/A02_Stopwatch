@@ -8,15 +8,26 @@ static TFT_eSPI tft = TFT_eSPI();
 TaskHandle_t taskTftHdlr;
 uint8_t tft_mode = 0;
 
+static uint8_t disp_mode = 0;
+static bool clear_scr = false;
+
 
 void DispNumber(int val)        // 0:00 - 99:99
 {
     char str[8];
     int dec = val / 10;
     int frac = val % 10;
-    sprintf(str, "%02d.%01d", dec, frac);
-    // tft.fillScreen(TFT_BLACK);
-    tft.drawString(str, 10, 20, 8);
+
+    if (disp_mode == 0)
+    {
+        sprintf(str, "%02d.%01d", dec, frac);
+        tft.drawString(str, 10, 20, 8);
+    }
+    else
+    {
+        sprintf(str, "%03d.%01d", dec, frac);
+        tft.drawString(str, 40, 35, 7);
+    }
 }
 
 void TaskTFT(void *pvParameters)
@@ -48,9 +59,24 @@ void TaskTFT(void *pvParameters)
         case 2:     // counting
             {
                 TickType_t taskStartTime = xTaskGetTickCount();
+
+                if (clear_scr)
+                {
+                    clear_scr = 0;
+                    tft.fillScreen(TFT_BLACK);
+                }
+
                 DispNumber(val);
-                if (++val >= 999)
-                    val = 0;
+                if (disp_mode == 0)
+                {
+                    if (++val >= 999)
+                        val = 0;
+                }
+                else
+                {
+                    if (++val >= 9999)
+                        val = 0;
+                }
 
                 TickType_t currentTime = xTaskGetTickCount();
                 TickType_t elapsedTime = currentTime - taskStartTime;
@@ -101,4 +127,14 @@ void TftDo(tft_do what)
         tft_mode = 3;
         break;
     }
+}
+
+void DispModeChange(void)
+{
+    clear_scr = true;
+
+    if (disp_mode)
+        disp_mode = 0;
+    else
+        disp_mode = 1;
 }

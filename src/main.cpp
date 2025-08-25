@@ -19,6 +19,11 @@ void TaskMain(void *pvParameters)
 
     while(1)
     {
+        // Display mode managing
+        bool key_mode_state = GetSwitchState(LEFT_KEY);
+        if (key_mode_state)
+            DispModeChange();
+
         bool key_state = GetSwitchState(EXTERNAL_KEY);
         tft_do state = TftGetState();
 

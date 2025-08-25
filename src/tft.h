@@ -10,9 +10,13 @@ enum tft_do
     COUNTING_STOPED,
 };
 
+
+// API functions
+void DispNumber(int val);
 void TaskTFT(void *pvParameters);
 tft_do TftGetState(void);
 void TftDo(tft_do what);
-void DispNumber(int val);
+void DispModeChange(void);
+
 
 #endif
