@@ -13,5 +13,6 @@ extern TaskHandle_t taskLogHdlr;
 
 void TaskLog(void *pvParameters);
 void LogString(const char *str);
+void Nothing(const char* format, ...);
 
 #endif

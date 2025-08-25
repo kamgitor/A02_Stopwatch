@@ -9,7 +9,7 @@
 #define LOG_MAX_LENGTH       64
 
 TaskHandle_t taskLogHdlr;
-QueueHandle_t logQueue;
+static QueueHandle_t logQueue;
 
 
 // **************************************************************************
